@@ -8,36 +8,52 @@
 import XCTest
 
 final class Weather_AppUITests: XCTestCase {
-
+    
+    var app: XCUIApplication!
+    
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
-
-        // In UI tests it is usually best to stop immediately when a failure occurs.
+        try super.setUpWithError()
         continueAfterFailure = false
-
-        // In UI tests it’s important to set the initial state - such as interface orientation - required for your tests before they run. The setUp method is a good place to do this.
-    }
-
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
-    }
-
-    @MainActor
-    func testExample() throws {
-        // UI tests must launch the application that they test.
-        let app = XCUIApplication()
+        app = XCUIApplication()
         app.launch()
-
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
-
+    
+    override func tearDownWithError() throws {
+        app = nil
+        try super.tearDownWithError()
+    }
+    
     @MainActor
-    func testLaunchPerformance() throws {
-        if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
-            // This measures how long it takes to launch your application.
-            measure(metrics: [XCTApplicationLaunchMetric()]) {
-                XCUIApplication().launch()
-            }
+    func testAppLaunch_DisplaysLoading_ThenForecastData() throws {
+        let navigationTitleText = "Прогноз: Москва"
+        let navigationBar = app.navigationBars[navigationTitleText]
+        XCTAssertTrue(navigationBar.waitForExistence(timeout: 10), "Навигационный заголовок '\(navigationTitleText)' должен появиться.")
+        
+        let loadingIndicator = app.staticTexts["Загрузка прогноза..."]
+        
+        if loadingIndicator.exists {
+            let loadingDisappeared = expectation(for: NSPredicate(format: "exists == false"), evaluatedWith: loadingIndicator, handler: nil)
+            wait(for: [loadingDisappeared], timeout: 20)
+        }
+        
+        let temperaturePredicate = NSPredicate(format: "label CONTAINS[c] '°C'")
+        let anyTemperatureText = app.staticTexts.containing(temperaturePredicate).firstMatch
+        
+        XCTAssertTrue(anyTemperatureText.waitForExistence(timeout: 15), "Хотя бы один элемент с температурой должен появиться в списке.")
+        
+        if anyTemperatureText.exists {
+            let todayText = app.staticTexts["Сегодня"]
+            let tomorrowText = app.staticTexts["Завтра"]
+            let dayOfWeekVisible = todayText.exists || tomorrowText.exists || app.staticTexts.containing(NSPredicate(format: "label IN %@", ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Вс"])).firstMatch.exists
+            XCTAssertTrue(dayOfWeekVisible, "Отображаемое имя дня должно присутствовать.")
+            
+            let windPredicate = NSPredicate(format: "label CONTAINS[c] 'км/ч'")
+            let anyWindText = app.staticTexts.containing(windPredicate).firstMatch
+            XCTAssertTrue(anyWindText.exists, "Скорость ветра должна быть видна.")
+            
+            let humidityPredicate = NSPredicate(format: "label CONTAINS[c] '%'")
+            let anyHumidityText = app.staticTexts.containing(humidityPredicate).firstMatch
+            XCTAssertTrue(anyHumidityText.exists, "Влажность должна быть видна.")
         }
     }
 }

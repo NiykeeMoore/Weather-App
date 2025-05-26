@@ -20,16 +20,16 @@ protocol WeatherViewModelProtocol: ObservableObject {
 }
 
 @MainActor
-class WeatherViewModel: WeatherViewModelProtocol {
+final class WeatherViewModel: WeatherViewModelProtocol {
     
     @Published var forecastDays: [ForecastDayItem] = []
     @Published var isLoading: Bool = false
     @Published var errorMessage: String? = nil
     @Published private(set) var cityName: String
     
-    private let weatherService: WeatherAPIService
+    private let weatherService: WeatherService
     
-    init(city: String, weatherService: WeatherAPIService = WeatherAPIService()) {
+    init(city: String, weatherService: WeatherService = WeatherAPIService()) {
         self.cityName = city
         self.weatherService = weatherService
     }
