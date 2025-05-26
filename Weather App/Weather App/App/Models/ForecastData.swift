@@ -8,5 +8,9 @@
 import Foundation
 
 struct ForecastData: Decodable {
-    let forecastday: [ForecastDay]
+    let forecastDay: [ForecastDay]
+    
+    private enum CodingKeys: String, CodingKey {
+        case forecastDay = "forecastday"
+    }
 }

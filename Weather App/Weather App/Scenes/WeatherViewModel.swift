@@ -31,17 +31,17 @@ class WeatherViewModel: ObservableObject {
             let response = try await weatherService.fetchWeatherForecast(for: cityName, days: days)
             
             self.forecastDays = (
-                response.forecast.forecastday.map { apiDayForecast -> ForecastDayItem in
-                    let date = Date(timeIntervalSince1970: TimeInterval(apiDayForecast.date_epoch))
+                response.forecast.forecastDay.map { apiDayForecast -> ForecastDayItem in
+                    let date = Date(timeIntervalSince1970: TimeInterval(apiDayForecast.dateEpoch))
                     let iconUrl = apiDayForecast.day.condition.iconURL
                     
                     return ForecastDayItem(
                         date: date,
                         conditionText: apiDayForecast.day.condition.text,
                         iconURL: iconUrl,
-                        avgTempCelsius: apiDayForecast.day.avgtemp_c,
-                        maxWindKph: apiDayForecast.day.maxwind_kph,
-                        avgHumidity: apiDayForecast.day.avghumidity
+                        avgTempCelsius: apiDayForecast.day.avgTempC,
+                        maxWindKph: apiDayForecast.day.maxWindKph,
+                        avgHumidity: apiDayForecast.day.avgHumidity
                     )
                 }
             )
@@ -57,7 +57,7 @@ class WeatherViewModel: ObservableObject {
         self.isLoading = false
     }
     
-    func updateCity(name: String) async {
+    func updateCity(name: String) {
         self.cityName = name
     }
 }

@@ -82,10 +82,19 @@ struct DailyWeatherRow: View {
 }
 
 #Preview {
+     let mock = ForecastDayItem(
+        date: Date(),
+        conditionText: "Солнечно",
+        iconURL: URL(string: "https://cdn.weatherapi.com/weather/64x64/day/113.png"),
+        avgTempCelsius: 22.0,
+        maxWindKph: 15.0,
+        avgHumidity: 60.0
+    )
+    
     List {
-        DailyWeatherRow(forecast: MockWeatherData.getSampleForecasts()[0])
-        DailyWeatherRow(forecast: MockWeatherData.getSampleForecasts()[1])
-        DailyWeatherRow(forecast: MockWeatherData.getSampleForecasts()[2])
+        DailyWeatherRow(forecast: mock)
+        DailyWeatherRow(forecast: mock)
+        DailyWeatherRow(forecast: mock)
     }
     .listStyle(.plain)
 }

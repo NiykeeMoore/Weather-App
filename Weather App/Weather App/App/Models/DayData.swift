@@ -8,8 +8,15 @@
 import Foundation
 
 struct DayData: Decodable {
-    let avgtemp_c: Double
-    let maxwind_kph: Double
-    let avghumidity: Double
+    let avgTempC: Double
+    let maxWindKph: Double
+    let avgHumidity: Double
     let condition: ConditionData
+    
+    private enum CodingKeys: String, CodingKey {
+        case avgTempC = "avgtemp_c"
+        case maxWindKph = "maxwind_kph"
+        case avgHumidity = "avghumidity"
+        case condition
+    }
 }

@@ -58,8 +58,6 @@ final class WeatherAPIService {
                 throw NetworkError.decodingError(decodingError)
             }
             
-        } catch let error as NetworkError {
-            throw error
         } catch {
             throw NetworkError.requestFailed(error)
         }

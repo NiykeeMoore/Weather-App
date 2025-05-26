@@ -8,7 +8,7 @@
 import SwiftUI
 
 @main
-struct Weather_AppApp: App {
+struct WeatherApp: App {
     var body: some Scene {
         WindowGroup {
             WeatherListView(city: "Москва")
