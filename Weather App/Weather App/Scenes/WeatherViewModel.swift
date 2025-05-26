@@ -9,7 +9,18 @@
 import SwiftUI
 
 @MainActor
-class WeatherViewModel: ObservableObject {
+protocol WeatherViewModelProtocol: ObservableObject {
+    var forecastDays: [ForecastDayItem] { get }
+    var isLoading: Bool { get }
+    var errorMessage: String? { get }
+    var cityName: String { get }
+
+    func loadWeatherForecast(days: Int) async
+    func updateCity(name: String)
+}
+
+@MainActor
+class WeatherViewModel: WeatherViewModelProtocol {
     
     @Published var forecastDays: [ForecastDayItem] = []
     @Published var isLoading: Bool = false

@@ -8,7 +8,11 @@
 
 import Foundation
 
-final class WeatherAPIService {
+protocol WeatherService {
+    func fetchWeatherForecast(for city: String, days: Int) async throws -> WeatherAPIResponse
+}
+
+final class WeatherAPIService: WeatherService {
     
     private let session: URLSession
     

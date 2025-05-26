@@ -7,11 +7,11 @@
 
 import SwiftUI
 
-struct WeatherListView: View {
-    @StateObject private var viewModel: WeatherViewModel
+struct WeatherListView<ViewModel: WeatherViewModelProtocol>: View {
+    @StateObject private var viewModel: ViewModel
     
-    init(city: String) {
-        _viewModel = StateObject(wrappedValue: WeatherViewModel(city: city))
+    init(viewModel: ViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
     }
     
     var body: some View {
@@ -40,5 +40,7 @@ struct WeatherListView: View {
 }
 
 #Preview {
-    WeatherListView(city: "Moscow")
+    let weatherService = WeatherAPIService()
+    let viewModel = WeatherViewModel(city: "Москва", weatherService: weatherService)
+    WeatherListView(viewModel: viewModel)
 }
