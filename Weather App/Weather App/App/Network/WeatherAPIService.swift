@@ -16,7 +16,7 @@ final class WeatherAPIService {
         self.session = session
     }
     
-    func fetchWeatherForecast(for city: String, days: Int = 5) async throws -> WeatherAPIResponse {
+    func fetchWeatherForecast(for city: String, days: Int) async throws -> WeatherAPIResponse {
         guard !APIConstants.apiKey.isEmpty else {
             throw NetworkError.apiKeyMissing
         }

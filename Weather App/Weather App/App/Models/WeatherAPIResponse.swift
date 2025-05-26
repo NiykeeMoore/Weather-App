@@ -8,5 +8,5 @@
 import Foundation
 
 struct WeatherAPIResponse: Decodable {
-    let location: LocationData?
+    let forecast: ForecastData
 }

@@ -8,44 +8,37 @@
 import SwiftUI
 
 struct WeatherListView: View {
-    @State private var forecastItems: [ForecastDayItem] = MockWeatherData.getSampleForecasts()
-    @State private var isLoading: Bool = false
-    @State private var errorMessage: String? = nil
+    @StateObject private var viewModel: WeatherViewModel
     
-    private let cityName = "Москва"
+    init(city: String) {
+        _viewModel = StateObject(wrappedValue: WeatherViewModel(city: city))
+    }
     
     var body: some View {
         NavigationView {
             VStack(spacing: 0) {
-                if isLoading {
+                if viewModel.isLoading {
                     ProgressView("Загрузка прогноза...")
                         .frame(maxHeight: .infinity)
-                } else if let errorMsg = errorMessage {
-                    VStack {
-                        Image(systemName: "exclamationmark.triangle.fill")
-                            .font(.largeTitle)
-                            .foregroundStyle(.red)
-                            .padding(.bottom, 5)
-                        Text(errorMsg)
-                            .font(.headline)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal)
-                    }
-                    .frame(maxHeight: .infinity)
+                } else if let errorMsg = viewModel.errorMessage {
+                    Text(errorMsg)
                 } else {
                     List {
-                        ForEach(forecastItems) { item in
+                        ForEach(viewModel.forecastDays) { item in
                             DailyWeatherRow(forecast: item)
                         }
                     }
                     .listStyle(.plain)
                 }
             }
-            .navigationTitle("Прогноз: \(cityName)")
+            .navigationTitle("Прогноз: \(viewModel.cityName)")
+            .task {
+                await viewModel.loadWeatherForecast(days: 5)
+            }
         }
     }
 }
 
 #Preview {
-    WeatherListView()
+    WeatherListView(city: "Moscow")
 }
